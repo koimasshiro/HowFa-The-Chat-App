@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../Models/userModel');
 const generateToken = require('../Config/token');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 // Register new user
@@ -72,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) => {
             const validity = await bcrypt.compare(password, user.password);
 
             if (!validity) {
-                res.status(400).json("Wrong password")
+                res.status(400).json("Incorrect credentials")
             }
             else {
                 const token = jwt.sign({
