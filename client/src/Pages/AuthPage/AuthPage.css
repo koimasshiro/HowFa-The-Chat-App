@@ -20,7 +20,7 @@ html {
 }
 
 body {
-    background: linear-gradient(to right, #da4453, var(--mainColor));
+    /* background: linear-gradient(to right, #da4453, var(--mainColor)); */
     font-weight: 400;
     min-height: 100vh;
     display: grid;
@@ -69,7 +69,16 @@ body {
     margin: 3rem 0;
 }
 
-.wrapper .form-container form .form-group i,
+.wrapper .form-container form .form-group span{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.6rem;
+    text-transform: capitalize;
+    color: var(--labelColor);
+    padding: 0 .5rem;
+}
+
 .wrapper .form-container form .form-group label {
     position: absolute;
     top: 50%;
@@ -82,12 +91,14 @@ body {
     transition: all .5s ease;
 }
 
-.wrapper .form-container form .form-group i {
-    left: .5rem;
+.wrapper .form-container form .form-group span {
+    right: .2rem;
+    
 }
 
 .wrapper .form-container form .form-group label {
     left: 2.5rem;
+
 }
 
 .wrapper .form-container form .form-group input {
@@ -102,11 +113,11 @@ body {
     color: var(--labelColor);
     background: transparent;
 }
+/* form .form-group input:focus~span,
+form .form-group input:valid~span */
 
 form .form-group input:focus~label,
-form .form-group input:valid~label,
-form .form-group input:focus~i,
-form .form-group input:valid~i {
+form .form-group input:valid~label {
     top: 0 !important;
     font-size: 1.2rem !important;
     background-color: var(--whiteColor);
