@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-// import { BiHide, BiShow } from "react-icons/bi";
+import { BiHide, BiShow } from "react-icons/bi";
 import { Button } from "@chakra-ui/button";
 import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
-// import { useNavigate } from 'react-router';
 import "./AuthPage.css";
 import { useNavigate } from "react-router";
-import { FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from "@chakra-ui/react";
 
 const AuthPage = () => {
   const [show, setShow] = useState(false);
@@ -109,9 +107,9 @@ const AuthPage = () => {
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+      data.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
+      data.append("cloud_name", process.env.CLOUDINARY_CLOUD_NAME);
+      fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: "post",
         body: data,
       })
@@ -139,210 +137,155 @@ const AuthPage = () => {
   };
 
 
+  //Swap between login and signup UI design
+  const [isSignIn, setIsSignIn] = useState(true);
 
-  
+  const handleSignUpClick = () => {
+    setIsSignIn(false);
+  };
+
+  const handleSignInClick = () => {
+    setIsSignIn(true);
+  };
+
   return (
     <div className="authContainer">
-    <div
-      className='wrapper'
-    >
-    <VStack spacing="10px" className="form-container">
-      <h2>Sign Up</h2>
-      <FormControl id="first-name" className="form-group" isRequired>
-        <FormLabel>Name</FormLabel>
-        <Input
-          placeholder="Enter Your Name"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="email" className="form-group" isRequired>
-        <FormLabel>Email Address</FormLabel>
-        <Input
-          type="email"
-          placeholder="Enter Your Email Address"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={show ? "text" : "password"}
-            placeholder="Enter Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="confirmpassword" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={show ? "text" : "password"}
-            placeholder="Confirm password"
-            onChange={(e) => setConfirmpassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="pic">
-        <FormLabel>Upload your Picture</FormLabel>
-        <Input
-          type="file"
-          p={1.5}
-          accept="image/*"
-          onChange={(e) => postDetails(e.target.files[0])}
-        />
-      </FormControl>
-      <Button
-        colorScheme="blue"
-        width="100%"
-        style={{ marginTop: 15 }}
-        onClick={submitHandler}
-        isLoading={picLoading}
+      <div
+        className={`wrapper ${isSignIn ? "animated-signin" : "animated-signup"
+          }`}
       >
-        Sign Up
-      </Button>
-    </VStack>
+        <div className="form-container sign-up">
+          <form>
+            <h2>sign up</h2>
+            <div className="form-group">
+              <input
+                type="text"
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <i className="fas fa-user"></i>
+              <label htmlFor="">username</label>
+            </div>
+            <div className="form-group">
+              <input
+                type="email"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <label htmlFor="">email</label>
+            </div>
+            <div className="form-group">
+              <input
+                type={show ? "text" : "password"}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span>
+                <button onClick={handleClick} >
+                  {show ? (
+                    <BiHide style={{ fontSize: "20px" }} />
+                  ) : (
+                    <BiShow style={{ fontSize: "20px" }} />
+                  )}
+                </button>
+              </span>
+              <label htmlFor="">password</label>
+            </div>
+            <div className="form-group">
+              <input
+                type="password"
+                onChange={(e) => setConfirmpassword(e.target.value)}
+                required
+              />
+              <i className="fas fa-lock"></i>
+              <label htmlFor="">confirm password</label>
+            </div>
+            <div className="form-group">
+              <input
+                type="file"
+                p={1.5}
+                accept="image/*"
+                onChange={(e) => postDetails(e.target.files[0])}
+              />
+              <label htmlFor="">Upload profile picture</label>
+            </div>
+            <Button
+              className="btn"
+              width="100%"
+              style={{ marginTop: 15 }}
+              onClick={submitHandler}
+              isLoading={picLoading}
+            >
+              sign up
+            </Button>
+            <div className="link">
+              <p>
+                You already have an account?
+                <a className="signin-link" onClick={handleSignUpClick}>
+                  {" "}
+                  sign in
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+        <div className="form-container sign-in">
+          <form action="#">
+            <h2>login</h2>
+            <div className="form-group">
+              <input type="text" required />
+              <i className="fas fa-user"></i>
+              <label htmlFor="">username</label>
+            </div>
+            <div className="form-group">
+              <input type={show ? "text" : "password"} required />
+              <span>
+                <button onClick={handleClick}>
+                  {show ? (
+                    <BiHide style={{ fontSize: "20px" }} />
+                  ) : (
+                    <BiShow style={{ fontSize: "20px" }} />
+                  )}
+                </button>
+              </span>
+              <label htmlFor="">password</label>
+            </div>
+            <div className="forgot-pass">
+              <a href="">forgot password?</a>
+            </div>
+            <button type="submit" className="btn">
+              login
+            </button>
+            <div className="link">
+              <p>
+                Don't have an account?
+                <a className="signup-link" onClick={handleSignInClick}>
+                  {" "}
+                  sign up
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
   );
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const [show, setShow] = useState(false);
-// const [name, setName] = useState();
-// const [email, setEmail] = useState();
-// const [password, setPassword] = useState();
-// const [confirmpassword, setConfirmpassword] = useState();
-// const [image, setImage] = useState();
-//   const [imageLoading, setImageLoading] = useState(false);
-
-// const handleClick = () => setShow(!show);
-// const toast = useToast();
-// const navigate = useNavigate();
-
-// const submitHandler = async () => {
-
-//   setImageLoading(true);
-//   if (!name || !email || !password || !confirmpassword) {
-//     console.log("Please Fill all the Fields")
-//     setImageLoading(false);
-//     return;
-//   }
-//   if (password !== confirmpassword) {
-//     console.log("passwords do not match")
-//   }
-//   console.log(name, email, password, image);
-//   try {
-//     const config = {
-//       headers: {
-//         "Content-type": "application/json",
-//       },
-//     };
-//     const { data } = await axios.post(
-//       "/api/user",
-//       {
-//         name,
-//         email,
-//         password,
-//         image,
-//       },
-//       config
-//     );
-//     // console.log(data);
-//    console.log("Registration Successful")
-//     localStorage.setItem("userInfo", JSON.stringify(data));
-//     setImageLoading(false);
-//     navigate.push('/chats')
-//   } catch (error) {
-//     console.log(error)
-//     setImageLoading(false);
-//   }
-// };
-
-
-
-// const uploadImage = (images) => {
-//   setImageLoading(true);
-//   if (images === undefined) {
-//     toast({
-//       title: "Please Select an Image!",
-//       status: "warning",
-//       duration: 5000,
-//       isClosable: true,
-//       position: "bottom",
-//     });
-//     return;
-//   }
-//   console.log(images);
-//   if (images.type === "image/jpeg" || images.type === "image/png") {
-//     const data = new FormData();
-//     data.append("file", images);
-//     data.append("upload_preset", "HowFa-ChatApp");
-//     data.append("cloud_name", "dj5yki98o");
-//     fetch("https://api.cloudinary.com/v1_1/dj5yki98o/image/upload", {
-//       method: "post",
-//       body: data,
-//     })
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setImage(data.url.toString());
-//         console.log(data.url.toString());
-//         setImageLoading(false);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//         setImageLoading(false);
-//       });
-//   } else {
-//     toast({
-//       title: "Please Select an Image!",
-//       status: "warning",
-//       duration: 5000,
-//       isClosable: true,
-//       position: "bottom",
-//     });
-//     setImageLoading(false);
-//     return;
-//   }
-// };
 
 
 
@@ -356,128 +299,5 @@ const AuthPage = () => {
 //  const handleSignInClick = () => {
 //    setIsSignIn(true);
 //  };
-
-// return (
-{/* <div className="authContainer">
-  <div
-    className={`wrapper ${
-      isSignIn ? "animated-signin" : "animated-signup"
-    }`}
-  > */}
-//     <div className="form-container sign-up">
-//       <form>
-//         <h2>sign up</h2>
-//         <div className="form-group">
-//           <input
-//             type="text"
-//             onChange={(e) => setName(e.target.value)}
-//             required
-//           />
-//           <i className="fas fa-user"></i>
-//           <label htmlFor="">username</label>
-//         </div>
-//         <div className="form-group">
-//           <input
-//             type="email"
-//             onChange={(e) => setEmail(e.target.value)}
-//             required
-//           />
-//           <label htmlFor="">email</label>
-//         </div>
-//         <div className="form-group">
-//           <input
-//             type={show ? "text" : "password"}
-//             onChange={(e) => setPassword(e.target.value)}
-//             required
-//           />
-//           <span>
-//             <button onClick={handleClick} >
-//               {show ? (
-//                 <BiHide style={{ fontSize: "20px" }} />
-//               ) : (
-//                 <BiShow style={{ fontSize: "20px" }} />
-//               )}
-//             </button>
-//           </span>
-//           <label htmlFor="">password</label>
-//         </div>
-//         <div className="form-group">
-//           <input
-//             type="password"
-//             onChange={(e) => setConfirmpassword(e.target.value)}
-//             required
-//           />
-//           <i className="fas fa-lock"></i>
-//           <label htmlFor="">confirm password</label>
-//         </div>
-//         <div className="form-group">
-//           <input
-//             type="file"
-//             p={1.5}
-//             accept="image/*"
-//             onChange={(e) => uploadImage(e.target.files[0])}
-//           />
-//           <label htmlFor="">Upload profile picture</label>
-//         </div>
-//         <button
-//           type="submit"
-//           className="btn"
-//           onClick={submitHandler}
-//         >
-//           sign up
-//         </button>
-//         <div className="link">
-//           <p>
-//             You already have an account?
-//             <a className="signin-link" onClick={handleSignUpClick}>
-//               {" "}
-//               sign in
-//             </a>
-//           </p>
-//         </div>
-//       </form>
-//     </div>
-//     <div className="form-container sign-in">
-//       <form action="#">
-//         <h2>login</h2>
-//         <div className="form-group">
-//           <input type="text" required />
-//           <i className="fas fa-user"></i>
-//           <label htmlFor="">username</label>
-//         </div>
-//         <div className="form-group">
-//           <input type={show ? "text" : "password"} required />
-//           <span>
-//             <button onClick={handleClick}>
-//               {show ? (
-//                 <BiHide style={{ fontSize: "20px" }} />
-//               ) : (
-//                 <BiShow style={{ fontSize: "20px" }} />
-//               )}
-//             </button>
-//           </span>
-//           <label htmlFor="">password</label>
-//         </div>
-//         <div className="forgot-pass">
-//           <a href="">forgot password?</a>
-//         </div>
-//         <button type="submit" className="btn">
-//           login
-//         </button>
-//         <div className="link">
-//           <p>
-//             Don't have an account?
-//             <a className="signup-link" onClick={handleSignInClick}>
-//               {" "}
-//               sign up
-//             </a>
-//           </p>
-//         </div>
-//       </form>
-//     </div>
-//   </div>
-// </div>
-// );
-
 
 export default AuthPage;
