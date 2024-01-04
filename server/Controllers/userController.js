@@ -6,9 +6,10 @@ const jwt = require('jsonwebtoken');
 
 
 // Register new user
+
 const registerUser = asyncHandler(async (req, res) => {
 
-      //encrypting user password
+    //encrypting user password
 
     //make a salt from bcrypt lib with a value of 10
     const salt = await bcrypt.genSalt(10);
@@ -63,7 +64,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    
+
 
     //find user in database
     try {
@@ -92,4 +93,26 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { registerUser, loginUser }
+
+//GET all users
+/**
+ * @description Get All Users
+ * @route `/api/user?search=ese`
+ * @access Public
+ * @type GET
+ */
+const getAllUsers = asyncHandler(async (req, res) => {
+    const keyWord = req.query.search ? {
+        $or: [
+            { name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: "i" } },
+        ]
+    } : {};
+
+    //query database to search for a user but not the user logged in
+    const users = await User.find(keyWord).find({ _id: { $ne: req.user._id } });
+    res.send(users);
+
+});
+
+module.exports = { registerUser, loginUser, getAllUsers }
