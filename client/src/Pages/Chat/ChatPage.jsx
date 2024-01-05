@@ -1,27 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React from 'react';
+import { ChatState } from '../../Context/ChatProvider';
+import SidePanel from '../../Components/SidePanel';
+import SideBar from '../../Components/SideBar/SideBar';
 
 const ChatPage = () => {
-
-  // const [chats, setChats] = useState([]);
-
-  // //API call to render the chats from backend to frontend
-  // const fetchChats = async()=>{
-  //   const { data } = await axios.get('/api/chats');
-
-  //   setChats(data);
-    
-  // };
-
-  // useEffect(()=>{
-  //   fetchChats();
-  // }, []);
-
+  const {user} = ChatState();
 
   return(
     <div>
-      {/* {chats.map(chat => <div key={chat.id}>{chat.chatName}</div>)} */}
-      Chat Page
+      {/* {user && <SidePanel/>} */}
+      <SideBar/>
     </div>
   )
 }
