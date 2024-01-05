@@ -12,8 +12,9 @@ const ChatPage = () => {
   return (
     <section className="chat-section">
       <div className="chat-container">
-        <SideBar />
-        <ChatContent />
+
+        {user && <SideBar />}
+        {user && <ChatContent />}
       </div>
     </section>
   );

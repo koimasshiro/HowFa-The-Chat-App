@@ -17,7 +17,7 @@ const Register = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmpassword, setConfirmpassword] = useState();
-  const [pic, setPic] = useState();
+  const [image, setImage] = useState();
   const [picLoading, setPicLoading] = useState(false);
 
   const submitHandler = async () => {
@@ -43,7 +43,7 @@ const Register = (props) => {
       });
       return;
     }
-    console.log(name, email, password, pic);
+    console.log(name, email, password, image);
     try {
       const config = {
         headers: {
@@ -54,7 +54,7 @@ const Register = (props) => {
       console.log("Axios Request:", {
         method: "POST",
         url: "/api/user",
-        data: { name, email, password, pic },
+        data: { name, email, password, image },
         config,
       });
       const { data } = await axios.post(
@@ -63,7 +63,7 @@ const Register = (props) => {
           name,
           email,
           password,
-          pic,
+          image,
         },
         config
       );
@@ -108,15 +108,15 @@ const Register = (props) => {
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
-      data.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET);
-      data.append("cloud_name", process.env.CLOUDINARY_CLOUD_NAME);
-      fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      data.append("upload_preset", "HowFa-ChatApp");
+      data.append("cloud_name", "dj5yki98o");
+      fetch(`https://api.cloudinary.com/v1_1/dj5yki98o/image/upload`, {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
-          setPic(data.url.toString());
+          setImage(data.url.toString());
           console.log(data.url.toString());
           setPicLoading(false);
         })

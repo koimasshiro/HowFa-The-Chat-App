@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes} from 'react-router';
 import homePage from './Pages/HomePage/HomePage';
 import ChatPage from './Pages/Chat/ChatPage';
 import AuthPage from './Pages/AuthPage/AuthPage';
