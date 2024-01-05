@@ -82,7 +82,7 @@ const Login = (props) => {
       <form>
         <h2>Login</h2>
         <div className="form-group">
-          <input type="text" onChange={(e) => setEmail(e.target.value)} required />
+        <input type="text" onChange={(e) => setEmail(e.target.value)} required />
           <i className="fas fa-user"></i>
           <label htmlFor="">username</label>
         </div>

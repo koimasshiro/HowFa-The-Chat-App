@@ -2,10 +2,12 @@ import React from 'react';
 import './ConversationBox.css';
 import girlWaving from '../../Assets/3d-business-young-woman-sitting-with-a-laptop-and-waving-her-hand.png'
 import '../../Pages/Chat/ChatPage.css'
+import { ChatState } from '../../Context/ChatProvider';
 
 
 
 const ConversationBox = () => {
+    const {user} = ChatState();
   return (
     <div>
         <div className="conversation conversation-default active">

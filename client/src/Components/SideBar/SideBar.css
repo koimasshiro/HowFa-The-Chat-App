@@ -91,8 +91,6 @@
     list-style-type: none;
     border-radius: 4px;
     padding: 4px 0;
-    opacity: 0;
-    visibility: hidden;
     transform: scale(.9);
     transform-origin: left bottom;
     transition: all .15s ease-in-out;
