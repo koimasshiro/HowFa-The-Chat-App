@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import axios from 'axios';
 import { RiChatSmile2Line, RiContactsLine } from "react-icons/ri";
 import {
   MdOutlineSettingsSuggest,
@@ -12,13 +13,35 @@ import { BsChatQuoteFill, BsSearch } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa";
 import "./SideBar.css";
 import "../../Pages/Chat/ChatPage.css";
+import "../ChatContent/ChatContent.css";
 import "../tailwindcolorscss/tailwindColors.css";
 import ProfileModal from "../ProfileModal/ProfileModal";
 import { ChatState } from "../../Context/ChatProvider";
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Input,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import ChatLoading from "../ChatLoading/ChatLoading";
+import UserListItem from "../UserListItem/UserListItem";
 
 const SideBar = () => {
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingChat, setLoadingChat] = useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { user } = ChatState();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const logOutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -33,6 +56,45 @@ const SideBar = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
+
+  const handleSearch = async () => {
+    if(!search){
+      toast({
+        title: "Please enter a search item",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position:'top-left',
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization:`Bearer ${user.token}`,
+        },
+      };
+      const {data} = await axios.get(`/api/user?search=${search}`, config);
+
+      setLoading(false);
+      setSearchResult(data);
+    } catch (error) {
+      toast({
+        title: "Error Occurred",
+        description: "Failed to load the search results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom-left'
+      })
+    }
+  }
+
+  const accessChat = (userId)=>{
+
+  }
   return (
     <div>
       <div className="chat-sidebar">
@@ -45,11 +107,11 @@ const SideBar = () => {
               <RiChatSmile2Line />
             </a>
           </li>
-          <li>
-            <a href=" " data-title="Search">
+          <button onClick={onOpen}>
+            <a data-title="Search">
               <BsSearch />
             </a>
-          </li>
+          </button>
           <li>
             <a href=" " data-title="Notifications">
               <MdOutlineNotifications />
@@ -85,25 +147,69 @@ const SideBar = () => {
             </button>
 
             {isDropdownOpen && (
-              <div className='chat-sidebar-profile-dropdown'>
+              <div className="chat-sidebar-profile-dropdown">
                 {/* Dropdown Content Goes Here */}
                 <ProfileModal user={user}>
-                <li>
-                  <a href="">
-                    <FaRegUser /> Profile
-                  </a>
-                </li>
-                <li onClick={logOutHandler}><a href=""><i className="ri-logout-box-line"></i> Logout</a></li>
-
-              </ProfileModal>
+                  <li>
+                    <a href="">
+                      <FaRegUser /> Profile
+                    </a>
+                  </li>
+                  <li onClick={logOutHandler}>
+                    <a href="">
+                      <i className="ri-logout-box-line"></i> Logout
+                    </a>
+                  </li>
+                </ProfileModal>
               </div>
             )}
-            <ul className="chat-sidebar-profile-dropdown">
-              
-            </ul>
+            <ul className="chat-sidebar-profile-dropdown"></ul>
           </ul>
         </ul>
       </div>
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
+            <DrawerBody>
+              {/* <Box d="flex" pb={2}>
+              <Input
+                placeholder="search by name or email"
+                mr={2}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Button 
+              // onClick={handleSearch}
+              >Search</Button>
+            </Box> */}
+              <form action="" className="content-sidebar-form">
+                <input
+                  type="search"
+                  className="content-sidebar-input"
+                  placeholder="Search..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                />
+                <div className="content-sidebar-submit">
+                <Button onClick={handleSearch}>
+                  <BsSearch />
+                </Button>
+                </div>
+              </form>
+              {loading ? (
+                <ChatLoading/>
+              )
+              :
+              (
+                searchResult?.map(user => (
+                  <UserListItem key={user._id} user={user} handleFunc={()=> accessChat(user._id)}/>
+                ))
+              )}
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </div>
   );
 };

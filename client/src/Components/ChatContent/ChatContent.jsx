@@ -9,7 +9,7 @@ const ChatContent = () => {
     <div className="chat-content">
       <div className="content-sidebar">
         <div className="content-sidebar-title">Chats</div>
-        <form action="" className="content-sidebar-form">
+        {/* <form action="" className="content-sidebar-form">
           <input
             type="search"
             className="content-sidebar-input"
@@ -18,7 +18,7 @@ const ChatContent = () => {
           <button type="submit" className="content-sidebar-submit">
           <BsSearch />
           </button>
-        </form>
+        </form> */}
         <div className="content-messages">
           <ul className="content-messages-list">
             <li className="content-message-title">
