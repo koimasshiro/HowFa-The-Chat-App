@@ -39,7 +39,7 @@ const SideBar = () => {
   const [loadingChat, setLoadingChat] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user } = ChatState();
+  const { user, setSelectedChat, chats, setChats } = ChatState();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -92,8 +92,32 @@ const SideBar = () => {
     }
   }
 
-  const accessChat = (userId)=>{
+  const accessChat = async(userId)=>{
+    try {
+      setLoadingChat(true);
 
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization:`Bearer ${user.token}`,
+        },
+      };      
+
+      const data = await axios.post("api/chats", {userId}, config);
+
+    setSelectedChat(data);
+    setLoadingChat(false);
+    onClose();  
+    } catch (error) {
+      toast({
+        title: "Error fetching chats",
+        description: error.message,
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position:'bottom-left',
+      });
+    }
   }
   return (
     <div>
