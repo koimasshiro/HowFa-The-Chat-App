@@ -202,8 +202,8 @@ const SideBar = () => {
               )
               :
               (
-                searchResult?.map(user => (
-                  <UserListItem key={user._id} user={user} handleFunc={()=> accessChat(user._id)}/>
+                searchResult?.map(x => (
+                  <UserListItem key={x._id} user={x} handleFunc={()=> accessChat(x._id)}/>
                 ))
               )}
             </DrawerBody>
